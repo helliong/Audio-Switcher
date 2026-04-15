@@ -35,11 +35,36 @@ Install before using:
 2. Place `SoundVolumeView.exe` somewhere, for example:
    `C:\Tools\SoundVolumeView\`
 3. Create file:
-   `audio-switch.ahk`
+   `audio-switch.ahk` (for troubleshoots look step below)
 4. Paste your script into it
 5. Set correct path:
 
    `svv := "C:\Tools\SoundVolumeView\SoundVolumeView.exe"`
+
+---
+
+## File Extension (IMPORTANT)
+
+If you don't see file extensions in Windows:
+
+1. Open **File Explorer (This PC)**
+2. Click **three dots at the top (…)**
+3. Select **Options**
+4. Go to **View**
+5. Uncheck:
+   `Hide extensions for known file types`
+6. Click **OK**
+
+### Rename file correctly
+
+Correct:
+`audio-switch.ahk`
+
+Wrong:
+`audio-switch.ahk.txt`
+
+Rename:
+`audio-switch.txt → audio-switch.ahk`
 
 ---
 
