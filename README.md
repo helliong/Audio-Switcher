@@ -1,3 +1,10 @@
+Language:
+
+- 🇬🇧 English (current)
+- 🇷🇺 [Русский](README.ru.md)
+
+---
+
 # Audio Switcher (AutoHotkey v2)
 
 Скрипт для Windows 10/11, который позволяет переключать звук между наушниками и колонками по горячей клавише.
