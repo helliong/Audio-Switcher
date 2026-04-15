@@ -7,78 +7,78 @@ Language:
 
 # Audio Switcher (AutoHotkey v2)
 
-Скрипт для Windows 10/11, который позволяет переключать звук между наушниками и колонками по горячей клавише.
+Script for Windows 10/11 that allows you to switch audio output between headphones and speakers using a hotkey.
 
 ---
 
-## Возможности
+## Features
 
-- Быстрое переключение аудиоустройств
-- Горячая клавиша: **Ctrl + Alt + S**
-- Поддержка всех типов устройств (Realtek, USB, Bluetooth)
-- Работает через SoundVolumeView
+- Fast audio device switching
+- Hotkey: **Ctrl + Alt + S**
+- Works with all device types (Realtek, USB, Bluetooth)
+- Uses SoundVolumeView (reliable method)
 
 ---
 
-## Требования
+## Requirements
 
-Перед использованием установите:
+Install before using:
 
 - AutoHotkey v2 — https://www.autohotkey.com/
 - SoundVolumeView — https://www.nirsoft.net/utils/sound_volume_view.html
 
 ---
 
-## Установка
+## Installation
 
-1. Скачайте и распакуйте SoundVolumeView
-2. Поместите `SoundVolumeView.exe` в удобное место, например:
+1. Download and extract SoundVolumeView
+2. Place `SoundVolumeView.exe` somewhere, for example:
    `C:\Tools\SoundVolumeView\`
-3. Создайте файл:
+3. Create file:
    `audio-switch.ahk`
-4. Вставьте в него ваш скрипт
-5. Укажите правильный путь:
+4. Paste your script into it
+5. Set correct path:
 
    `svv := "C:\Tools\SoundVolumeView\SoundVolumeView.exe"`
 
 ---
 
-## Настройка устройств
+## Device Setup
 
-1. Запустите `SoundVolumeView.exe`
-2. Найдите колонку: **Command-Line Friendly ID**
-3. Скопируйте ID для:
-   - колонок
-   - наушников
+1. Run `SoundVolumeView.exe`
+2. Find column: **Command-Line Friendly ID**
+3. Copy IDs for:
+   - speakers
+   - headphones
 
-Пример:
+Example:
 
 `Realtek High Definition Audio\Device\Speakers\Render`  
 `Realtek High Definition Audio\Device\Headphones\Render`
 
-4. Вставьте в скрипт:
+4. Paste into script:
 
-`speakersId := "ВАШ_ID_КОЛОНОК"`  
-`headphonesId := "ВАШ_ID_НАУШНИКОВ"`
+`speakersId := "YOUR_SPEAKERS_ID"`  
+`headphonesId := "YOUR_HEADPHONES_ID"`
 
 ---
 
-## Использование
+## Usage
 
-1. Запустите скрипт:
+1. Run:
    `audio-switch.ahk`
-2. Нажмите:
+2. Press:
    **Ctrl + Alt + S**
 
-Звук переключится между устройствами.
+Audio will switch between devices.
 
 ---
 
-## Автозапуск (опционально)
+## Autostart (optional)
 
-Чтобы скрипт запускался вместе с Windows:
+To run script on Windows startup:
 
-1. Нажмите `Win + R`
-2. Введите:
+1. Press `Win + R`
+2. Type:
    `shell:startup`
-3. Поместите туда `.ahk` файл или ярлык
+3. Put `.ahk` file or shortcut there
