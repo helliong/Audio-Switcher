@@ -3,6 +3,8 @@ Language:
 - 🇬🇧 English (current)
 - 🇷🇺 [Русский](README.ru.md)
 
+Quick video instruction - https://drive.google.com/file/d/1Uf2UJzSEVnjTauZqtNAO9TS6MhPEKSo0/view?usp=sharing
+
 ---
 
 # Audio Switcher (AutoHotkey v2)
