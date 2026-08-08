@@ -1,3 +1,5 @@
 .tools/
 build/
-dist/clear
+dist/
+
+README.txt
