@@ -2,6 +2,9 @@
 #SingleInstance Force
 
 global AppName := "Audio Switcher"
+global AppVersion := "1.0.0"
+global ProjectUrl := "https://github.com/helliong/audio-switcher"
+global IssuesUrl := ProjectUrl "/issues"
 global ConfigDir := EnvGet("LOCALAPPDATA") "\AudioSwitcher"
 global ConfigPath := ConfigDir "\settings.ini"
 global SvvPath := FindSoundVolumeView()
@@ -40,6 +43,9 @@ T(key)
             "tray_switch", "Переключить устройство",
             "tray_settings", "Настройки",
             "tray_exit", "Выход",
+            "version", "Версия",
+            "github_project", "Проект на GitHub",
+            "github_issues", "Сообщить о проблеме",
             "settings_title", "Настройки",
             "current_device", "Сейчас активно",
             "unknown_device", "не удалось определить",
@@ -73,6 +79,9 @@ T(key)
             "tray_switch", "Switch device",
             "tray_settings", "Settings",
             "tray_exit", "Exit",
+            "version", "Version",
+            "github_project", "GitHub project",
+            "github_issues", "Report an issue",
             "settings_title", "Settings",
             "current_device", "Currently active",
             "unknown_device", "unable to determine",
@@ -239,7 +248,7 @@ SwitchAudioDevice(*)
 
 OpenSettings(*)
 {
-    global AppName, ConfigPath
+    global AppName, AppVersion, ProjectUrl, IssuesUrl, ConfigPath
     global CurrentLanguage, ActiveDeviceLabel
 
     devices := GetPlaybackDevices()
@@ -344,6 +353,21 @@ OpenSettings(*)
         ["Русский", "English"]
     )
 
+    guiWindow.AddText(
+        "xm y+20 c666666",
+        T("version") " " AppVersion
+    )
+
+    projectLink := guiWindow.AddLink(
+        "x+22 yp",
+        "<a href=`"" ProjectUrl "`">" T("github_project") "</a>"
+    )
+
+    issuesLink := guiWindow.AddLink(
+        "x+22 yp",
+        "<a href=`"" IssuesUrl "`">" T("github_issues") "</a>"
+    )
+
     saveButton := guiWindow.AddButton(
         "xm y+22 w210 h34 Default",
         T("save")
@@ -371,12 +395,20 @@ OpenSettings(*)
         CloseSettings.Bind(guiWindow)
     )
 
+    projectLink.OnEvent("Click", OpenWebLink)
+    issuesLink.OnEvent("Click", OpenWebLink)
+
     guiWindow.OnEvent(
         "Close",
         CloseSettings.Bind(guiWindow)
     )
 
     guiWindow.Show("AutoSize Center")
+}
+
+OpenWebLink(guiControl, linkInfo, href)
+{
+    try Run(href)
 }
 
 GetPlaybackDevices(showError := true)
