@@ -35,6 +35,7 @@ Audio Switcher — лёгкая утилита для Windows 10 и Windows 11, 
 - Управление через системный трей
 - Автоматический запуск вместе с Windows
 - Системные уведомления
+- Автоматические уведомления о новых релизах на GitHub
 - Установочная и переносимая версии
 - Поддержка Windows 10 и Windows 11
 - Отдельная установка AutoHotkey для готовых сборок не требуется
@@ -53,15 +54,15 @@ Audio Switcher — лёгкая утилита для Windows 10 и Windows 11, 
 
 Доступные файлы:
 
-- `AudioSwitcherSetup-v1.0.0-win-x64.exe` — установщик Windows
-- `AudioSwitcher-v1.0.0-portable-win-x64.zip` — переносимая версия
+- `AudioSwitcherSetup-v1.1.0-win-x64.exe` — установщик Windows
+- `AudioSwitcher-v1.1.0-portable-win-x64.zip` — переносимая версия
 - `SHA256SUMS.txt` — контрольные суммы файлов
 
 ## Установка
 
 ### Установщик
 
-1. Скачайте `AudioSwitcherSetup-v1.0.0-win-x64.exe`.
+1. Скачайте `AudioSwitcherSetup-v1.1.0-win-x64.exe`.
 2. Запустите установщик.
 3. Выберите язык установки.
 4. При необходимости включите автозапуск с Windows или создайте ярлык на рабочем столе.
@@ -75,7 +76,7 @@ Microsoft Defender SmartScreen может показать предупрежд�
 
 ### Переносимая версия
 
-1. Скачайте `AudioSwitcher-v1.0.0-portable-win-x64.zip`.
+1. Скачайте `AudioSwitcher-v1.1.0-portable-win-x64.zip`.
 2. Распакуйте все файлы в отдельную папку.
 3. Запустите `AudioSwitcher.exe`.
 4. Не удаляйте файлы SoundVolumeView из папки с Audio Switcher.
@@ -143,9 +144,9 @@ Audio Switcher сохраняет настройки отдельно для т�
 
 ## Текущая версия
 
-### Audio Switcher v1.0.0
+### Audio Switcher v1.1.0
 
-Первая стабильная версия включает:
+Эта версия включает:
 
 - Автоматическое определение аудиоустройств
 - Переключение между двумя выбранными устройствами
@@ -156,31 +157,35 @@ Audio Switcher сохраняет настройки отдельно для т�
 - Установщик Windows
 - Переносимую версию
 - Автоматический запуск вместе с Windows
+- Собственные иконки приложения и установщика
+- Версию и ссылки проекта в настройках
+- Автоматическую проверку релизов GitHub
+- Статус обновления и кнопку скачивания в настройках
 
 ## Контрольные суммы SHA-256
 
 ### Установщик
 
 ```text
-fb9f11c8a012f5c73fa873a195936231e9eb16c00f8c51b91ac1a1db5121f05c
+5cf2cc7eba6e0b2dbf67c5de133d81627c52cf0d0e5d6b6e756fd7923ed20968
 ```
 
 Файл:
 
 ```text
-AudioSwitcherSetup-v1.0.0-win-x64.exe
+AudioSwitcherSetup-v1.1.0-win-x64.exe
 ```
 
 ### Переносимый архив
 
 ```text
-a9662b78ea917148d8040c6b6ffbf99088292039fa1cae36cf3912a7de999b38
+acb1cbb1a365aadddfb717fccb205a98ee4d3bf44fc43a2df6720e08a84c9e50
 ```
 
 Файл:
 
 ```text
-AudioSwitcher-v1.0.0-portable-win-x64.zip
+AudioSwitcher-v1.1.0-portable-win-x64.zip
 ```
 
 ## Проверка скачанного файла
@@ -188,13 +193,13 @@ AudioSwitcher-v1.0.0-portable-win-x64.zip
 Откройте PowerShell в папке со скачанным файлом:
 
 ```powershell
-Get-FileHash ".\AudioSwitcherSetup-v1.0.0-win-x64.exe" -Algorithm SHA256
+Get-FileHash ".\AudioSwitcherSetup-v1.1.0-win-x64.exe" -Algorithm SHA256
 ```
 
 Для переносимого архива:
 
 ```powershell
-Get-FileHash ".\AudioSwitcher-v1.0.0-portable-win-x64.zip" -Algorithm SHA256
+Get-FileHash ".\AudioSwitcher-v1.1.0-portable-win-x64.zip" -Algorithm SHA256
 ```
 
 Полученные значения должны совпадать с контрольными суммами выше или записями в `SHA256SUMS.txt`.
@@ -202,7 +207,7 @@ Get-FileHash ".\AudioSwitcher-v1.0.0-portable-win-x64.zip" -Algorithm SHA256
 Также можно использовать `certutil`:
 
 ```powershell
-certutil -hashfile "AudioSwitcherSetup-v1.0.0-win-x64.exe" SHA256
+certutil -hashfile "AudioSwitcherSetup-v1.1.0-win-x64.exe" SHA256
 ```
 
 ## Стороннее программное обеспечение
@@ -274,7 +279,8 @@ New-Item -ItemType Directory -Force -Path ".\build"
 & $compiler `
   /in ".\src\AudioSwitcher.ahk" `
   /out ".\build\AudioSwitcher.exe" `
-  /base $base
+  /base $base `
+  /icon ".\assets\AudioSwitcher.ico"
 
 Copy-Item ".\vendor\SoundVolumeView\*" ".\build" -Recurse -Force
 ```

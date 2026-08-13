@@ -1,10 +1,17 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
+;@Ahk2Exe-SetName Audio Switcher
+;@Ahk2Exe-SetDescription Fast audio output device switcher
+;@Ahk2Exe-SetCompanyName helliong
+;@Ahk2Exe-SetFileVersion 1.1.0
+;@Ahk2Exe-SetProductVersion 1.1.0
 
 global AppName := "Audio Switcher"
-global AppVersion := "1.0.0"
+global AppVersion := "1.1.0"
 global ProjectUrl := "https://github.com/helliong/audio-switcher"
 global IssuesUrl := ProjectUrl "/issues"
+global LatestReleaseUrl := ProjectUrl "/releases/latest"
+global LatestReleaseApiUrl := "https://api.github.com/repos/helliong/audio-switcher/releases/latest"
 global ConfigDir := EnvGet("LOCALAPPDATA") "\AudioSwitcher"
 global ConfigPath := ConfigDir "\settings.ini"
 global SvvPath := FindSoundVolumeView()
@@ -18,6 +25,23 @@ global CurrentLanguage := IniRead(
 
 global CurrentHotkey := ""
 global ActiveDeviceLabel := 0
+global UpdateStatusLabel := 0
+global DownloadUpdateButton := 0
+global LatestVersion := IniRead(
+    ConfigPath,
+    "Updates",
+    "LatestVersion",
+    ""
+)
+global UpdateCheckFailed := false
+
+if !A_IsCompiled
+{
+    sourceIconPath := A_ScriptDir "\..\assets\AudioSwitcher.ico"
+
+    if FileExist(sourceIconPath)
+        TraySetIcon(sourceIconPath)
+}
 
 if !DirExist(ConfigDir)
     DirCreate ConfigDir
@@ -30,6 +54,7 @@ if (SvvPath = "")
 
 BuildTrayMenu()
 RegisterInitialHotkey()
+SetTimer(CheckForUpdates, -3000)
 
 A_IconTip := AppName
 
@@ -46,6 +71,13 @@ T(key)
             "version", "Версия",
             "github_project", "Проект на GitHub",
             "github_issues", "Сообщить о проблеме",
+            "update_available", "Доступна новая версия",
+            "update_message", "Доступна версия {1}.`nУ вас установлена версия {2}.`n`nОткрыть страницу загрузки?",
+            "update_available_short", "Доступна новая версия: {1}",
+            "latest_version_installed", "Установлена последняя версия",
+            "checking_for_updates", "Проверка обновлений...",
+            "update_check_failed", "Не удалось проверить обновления",
+            "download_update", "Скачать новую версию",
             "settings_title", "Настройки",
             "current_device", "Сейчас активно",
             "unknown_device", "не удалось определить",
@@ -82,6 +114,13 @@ T(key)
             "version", "Version",
             "github_project", "GitHub project",
             "github_issues", "Report an issue",
+            "update_available", "Update available",
+            "update_message", "Version {1} is available.`nYou have version {2} installed.`n`nOpen the download page?",
+            "update_available_short", "New version available: {1}",
+            "latest_version_installed", "You have the latest version",
+            "checking_for_updates", "Checking for updates...",
+            "update_check_failed", "Failed to check for updates",
+            "download_update", "Download new version",
             "settings_title", "Settings",
             "current_device", "Currently active",
             "unknown_device", "unable to determine",
@@ -250,6 +289,7 @@ OpenSettings(*)
 {
     global AppName, AppVersion, ProjectUrl, IssuesUrl, ConfigPath
     global CurrentLanguage, ActiveDeviceLabel
+    global UpdateStatusLabel, DownloadUpdateButton
 
     devices := GetPlaybackDevices()
 
@@ -353,8 +393,18 @@ OpenSettings(*)
         ["Русский", "English"]
     )
 
+    UpdateStatusLabel := guiWindow.AddText(
+        "xm y+18 w440",
+        GetUpdateStatusText()
+    )
+
+    DownloadUpdateButton := guiWindow.AddButton(
+        "xm y+8 w440 h34",
+        T("download_update")
+    )
+
     guiWindow.AddText(
-        "xm y+20 c666666",
+        "xm y+18 c666666",
         T("version") " " AppVersion
     )
 
@@ -397,18 +447,177 @@ OpenSettings(*)
 
     projectLink.OnEvent("Click", OpenWebLink)
     issuesLink.OnEvent("Click", OpenWebLink)
+    DownloadUpdateButton.OnEvent("Click", DownloadLatestRelease)
 
     guiWindow.OnEvent(
         "Close",
         CloseSettings.Bind(guiWindow)
     )
 
+    UpdateUpdateControls()
     guiWindow.Show("AutoSize Center")
 }
 
 OpenWebLink(guiControl, linkInfo, href)
 {
     try Run(href)
+}
+
+CheckForUpdates(*)
+{
+    global AppName, AppVersion, ConfigPath
+    global LatestReleaseUrl, LatestReleaseApiUrl
+    global LatestVersion, UpdateCheckFailed
+
+    today := FormatTime(, "yyyyMMdd")
+    lastCheck := IniRead(
+        ConfigPath,
+        "Updates",
+        "LastCheck",
+        ""
+    )
+
+    if (lastCheck = today && LatestVersion != "")
+    {
+        UpdateUpdateControls()
+        return
+    }
+
+    try
+    {
+        UpdateCheckFailed := false
+        request := ComObject("WinHttp.WinHttpRequest.5.1")
+        request.Open("GET", LatestReleaseApiUrl, false)
+        request.SetRequestHeader(
+            "User-Agent",
+            "Audio-Switcher/" AppVersion
+        )
+        request.Send()
+
+        if (request.Status != 200)
+        {
+            UpdateCheckFailed := true
+            UpdateUpdateControls()
+            return
+        }
+
+        if !RegExMatch(
+            request.ResponseText,
+            "i)\x22tag_name\x22\s*:\s*\x22v?([^\x22]+)\x22",
+            &match
+        )
+        {
+            UpdateCheckFailed := true
+            UpdateUpdateControls()
+            return
+        }
+
+        IniWrite(today, ConfigPath, "Updates", "LastCheck")
+        LatestVersion := match[1]
+        IniWrite(
+            LatestVersion,
+            ConfigPath,
+            "Updates",
+            "LatestVersion"
+        )
+        UpdateUpdateControls()
+
+        if !IsNewerVersion(LatestVersion, AppVersion)
+            return
+
+        choice := MsgBox(
+            Format(
+                T("update_message"),
+                LatestVersion,
+                AppVersion
+            ),
+            AppName " — " T("update_available"),
+            "YesNo Iconi"
+        )
+
+        if (choice = "Yes")
+            Run(LatestReleaseUrl)
+    }
+    catch
+    {
+        UpdateCheckFailed := true
+        UpdateUpdateControls()
+    }
+}
+
+GetUpdateStatusText()
+{
+    global AppVersion, LatestVersion, UpdateCheckFailed
+
+    if (LatestVersion != "")
+    {
+        if IsNewerVersion(LatestVersion, AppVersion)
+        {
+            return Format(
+                T("update_available_short"),
+                LatestVersion
+            )
+        }
+
+        return T("latest_version_installed")
+    }
+
+    return UpdateCheckFailed
+        ? T("update_check_failed")
+        : T("checking_for_updates")
+}
+
+UpdateUpdateControls()
+{
+    global AppVersion, LatestVersion
+    global UpdateStatusLabel, DownloadUpdateButton
+
+    if !IsObject(UpdateStatusLabel)
+        return
+
+    updateAvailable := (
+        LatestVersion != ""
+        && IsNewerVersion(LatestVersion, AppVersion)
+    )
+
+    UpdateStatusLabel.Text := GetUpdateStatusText()
+    UpdateStatusLabel.Opt(
+        updateAvailable ? "cB45309" : "c16803A"
+    )
+    DownloadUpdateButton.Enabled := updateAvailable
+}
+
+DownloadLatestRelease(*)
+{
+    global LatestReleaseUrl
+
+    try Run(LatestReleaseUrl)
+}
+
+IsNewerVersion(candidateVersion, currentVersion)
+{
+    candidateParts := StrSplit(candidateVersion, ".")
+    currentParts := StrSplit(currentVersion, ".")
+    partCount := Max(candidateParts.Length, currentParts.Length)
+
+    Loop partCount
+    {
+        candidatePart := A_Index <= candidateParts.Length
+            ? Integer(RegExReplace(candidateParts[A_Index], "\D.*$"))
+            : 0
+
+        currentPart := A_Index <= currentParts.Length
+            ? Integer(RegExReplace(currentParts[A_Index], "\D.*$"))
+            : 0
+
+        if (candidatePart > currentPart)
+            return true
+
+        if (candidatePart < currentPart)
+            return false
+    }
+
+    return false
 }
 
 GetPlaybackDevices(showError := true)
@@ -670,9 +879,12 @@ SaveSettings(
 CloseSettings(guiWindow, *)
 {
     global ActiveDeviceLabel
+    global UpdateStatusLabel, DownloadUpdateButton
 
     try guiWindow.Destroy()
     ActiveDeviceLabel := 0
+    UpdateStatusLabel := 0
+    DownloadUpdateButton := 0
 }
 
 ExitApplication(*)
