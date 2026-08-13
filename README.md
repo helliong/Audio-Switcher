@@ -35,6 +35,7 @@ It automatically detects available playback devices, shows the currently active 
 - System tray controls
 - Optional startup with Windows
 - Desktop notifications
+- Automatic notifications about new GitHub releases
 - Installer and portable distributions
 - Support for Windows 10 and Windows 11
 - No separate AutoHotkey installation required for release builds
@@ -53,15 +54,15 @@ For most users, the installer from SourceForge is recommended:
 
 Available packages:
 
-- `AudioSwitcherSetup-v1.0.0-win-x64.exe` — Windows installer
-- `AudioSwitcher-v1.0.0-portable-win-x64.zip` — portable version
+- `AudioSwitcherSetup-v1.1.0-win-x64.exe` — Windows installer
+- `AudioSwitcher-v1.1.0-portable-win-x64.zip` — portable version
 - `SHA256SUMS.txt` — file verification checksums
 
 ## Installation
 
 ### Installer
 
-1. Download `AudioSwitcherSetup-v1.0.0-win-x64.exe`.
+1. Download `AudioSwitcherSetup-v1.1.0-win-x64.exe`.
 2. Run the installer.
 3. Choose the installation language.
 4. Optionally enable startup with Windows or create a desktop shortcut.
@@ -75,7 +76,7 @@ Only run Audio Switcher when it was downloaded from the official GitHub reposito
 
 ### Portable Version
 
-1. Download `AudioSwitcher-v1.0.0-portable-win-x64.zip`.
+1. Download `AudioSwitcher-v1.1.0-portable-win-x64.zip`.
 2. Extract all files into a folder.
 3. Run `AudioSwitcher.exe`.
 4. Keep the included SoundVolumeView files in the same folder as Audio Switcher.
@@ -143,9 +144,9 @@ Existing settings are preserved when the application is updated.
 
 ## Current Release
 
-### Audio Switcher v1.0.0
+### Audio Switcher v1.1.0
 
-The first stable release includes:
+This release includes:
 
 - Automatic audio-device detection
 - Switching between two selected devices
@@ -156,31 +157,35 @@ The first stable release includes:
 - Windows installer
 - Portable distribution
 - Optional startup with Windows
+- Custom application and installer icons
+- Version and project links in settings
+- Automatic GitHub release checks
+- Update status and download button in settings
 
 ## SHA-256 Checksums
 
 ### Installer
 
 ```text
-fb9f11c8a012f5c73fa873a195936231e9eb16c00f8c51b91ac1a1db5121f05c
+5cf2cc7eba6e0b2dbf67c5de133d81627c52cf0d0e5d6b6e756fd7923ed20968
 ```
 
 File:
 
 ```text
-AudioSwitcherSetup-v1.0.0-win-x64.exe
+AudioSwitcherSetup-v1.1.0-win-x64.exe
 ```
 
 ### Portable Archive
 
 ```text
-a9662b78ea917148d8040c6b6ffbf99088292039fa1cae36cf3912a7de999b38
+acb1cbb1a365aadddfb717fccb205a98ee4d3bf44fc43a2df6720e08a84c9e50
 ```
 
 File:
 
 ```text
-AudioSwitcher-v1.0.0-portable-win-x64.zip
+AudioSwitcher-v1.1.0-portable-win-x64.zip
 ```
 
 ## Verify the Download
@@ -188,13 +193,13 @@ AudioSwitcher-v1.0.0-portable-win-x64.zip
 Open PowerShell in the folder containing the downloaded file:
 
 ```powershell
-Get-FileHash ".\AudioSwitcherSetup-v1.0.0-win-x64.exe" -Algorithm SHA256
+Get-FileHash ".\AudioSwitcherSetup-v1.1.0-win-x64.exe" -Algorithm SHA256
 ```
 
 For the portable archive:
 
 ```powershell
-Get-FileHash ".\AudioSwitcher-v1.0.0-portable-win-x64.zip" -Algorithm SHA256
+Get-FileHash ".\AudioSwitcher-v1.1.0-portable-win-x64.zip" -Algorithm SHA256
 ```
 
 The returned hashes should match the values above or the entries in `SHA256SUMS.txt`.
@@ -202,7 +207,7 @@ The returned hashes should match the values above or the entries in `SHA256SUMS.
 You can also use `certutil`:
 
 ```powershell
-certutil -hashfile "AudioSwitcherSetup-v1.0.0-win-x64.exe" SHA256
+certutil -hashfile "AudioSwitcherSetup-v1.1.0-win-x64.exe" SHA256
 ```
 
 ## Third-Party Software
@@ -274,7 +279,8 @@ New-Item -ItemType Directory -Force -Path ".\build"
 & $compiler `
   /in ".\src\AudioSwitcher.ahk" `
   /out ".\build\AudioSwitcher.exe" `
-  /base $base
+  /base $base `
+  /icon ".\assets\AudioSwitcher.ico"
 
 Copy-Item ".\vendor\SoundVolumeView\*" ".\build" -Recurse -Force
 ```

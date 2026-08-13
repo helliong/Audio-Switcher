@@ -1,5 +1,5 @@
 #define AppName "Audio Switcher"
-#define AppVersion "1.0.0"
+#define AppVersion "1.1.0"
 #define AppPublisher "helliong"
 #define AppExeName "AudioSwitcher.exe"
 
@@ -27,6 +27,7 @@ OutputBaseFilename=AudioSwitcherSetup-v{#AppVersion}-win-x64
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
+SetupIconFile=..\assets\AudioSwitcher.ico
 
 UninstallDisplayName={#AppName}
 UninstallDisplayIcon={app}\{#AppExeName}

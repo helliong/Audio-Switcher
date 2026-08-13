@@ -1,2 +1,2 @@
-fb9f11c8a012f5c73fa873a195936231e9eb16c00f8c51b91ac1a1db5121f05c  AudioSwitcherSetup-v1.0.0-win-x64.exe
-a9662b78ea917148d8040c6b6ffbf99088292039fa1cae36cf3912a7de999b38  AudioSwitcher-v1.0.0-portable-win-x64.zip
+5cf2cc7eba6e0b2dbf67c5de133d81627c52cf0d0e5d6b6e756fd7923ed20968  AudioSwitcherSetup-v1.1.0-win-x64.exe
+acb1cbb1a365aadddfb717fccb205a98ee4d3bf44fc43a2df6720e08a84c9e50  AudioSwitcher-v1.1.0-portable-win-x64.zip
